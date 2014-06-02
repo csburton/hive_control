@@ -24,3 +24,7 @@ $api = new \Hive\Api\Api('<username>', '<password>');
 $temperature = new \Hive\Control\Temperature($api);
 $temperature->setTargetTemperature(20);
 ```
+
+Currently I can't re-engineer the methods to set the heating schedule but, its something I'm working on.
+
+This is most definitely a work in progress
