@@ -51,7 +51,7 @@ Class Api
         );
         $data = $response->json();
         if (isset($data['error']) && $data['error'] != '') {
-            throw new \Exception($data['error']);
+            throw new Exception($data['error']);
         }
         return $data;
     }
