@@ -12,15 +12,15 @@ Sample Code
 Get Current Temperature
 ```php
 <?php
-$oApi = new \Hive\Api\Api('<username>', '<password>')
-$oStatus = new \Hive\Control\Status($oApi);
-echo $oStatus->getCurrentTemperature();
+$api = new \Hive\Api\Api('<username>', '<password>')
+$status = new \Hive\Control\Status($api);
+echo $status->getCurrentTemperature();
 ```
 
 Set Target Temperature
 ```php
 <?php
-$oApi = new \Hive\Api\Api('<username>', '<password>');
-$oTemperature = new \Hive\Control\Temperature($oApi);
-$oTemperature->setTargetTemperature(20);
+$api = new \Hive\Api\Api('<username>', '<password>');
+$temperature = new \Hive\Control\Temperature($api);
+$temperature->setTargetTemperature(20);
 ```
