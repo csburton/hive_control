@@ -17,4 +17,10 @@ $oStatus = new \Hive\Control\Status($oApi);
 echo $oStatus->getCurrentTemperature();
 ```
 
-
+Set Target Temperature
+```php
+<?php
+$oApi = new \Hive\Api\Api('<username>', '<password>');
+$oTemperature = new \Hive\Control\Temperature($oApi);
+$oTemperature->setTargetTemperature(20);
+```
