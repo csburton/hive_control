@@ -30,9 +30,7 @@ Class Api
     public function sendRequest($method = 'get', $location, $params = array())
     {
         if (!$this->logged_in && $location != '/login') {
-            $response = $this->sendRequest('post', '/login');
-            $this->logged_in = true;
-            $this->hubs = $response['hubIds'];
+            $this->performLogin();
         }
         $params = array_merge(
             [
@@ -53,7 +51,7 @@ Class Api
             if ($response->getStatusCode() == 204) {
                 return true;
             } else {
-                throw new Exception('Unable to perform action to '.$location);
+                throw new Exception('Unable to perform action to ' . $location);
             }
         }
         $data = $response->json();
@@ -124,5 +122,30 @@ Class Api
         return $this->password;
     }
 
+
+    /**
+     * Gets current Hub ID linked to logged in account
+     *
+     * @return string
+     */
+    public function getHubId()
+    {
+        if ($this->hubs === null) {
+            $this->performLogin();
+        }
+        return isset($this->hubs[0])?$this->hubs[0]:null;
+    }
+
+    /**
+     * Performs login action, request should be performed before any action
+     *
+     * @return bool
+     */
+    protected function performLogin() {
+        $response = $this->sendRequest('post', '/login');
+        $this->logged_in = true;
+        $this->hubs = $response['hubIds'];
+        return true;
+    }
 
 }
