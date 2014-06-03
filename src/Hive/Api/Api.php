@@ -49,6 +49,13 @@ Class Api
                 'cookies' => $this->getCookieJar()
             ]
         );
+        if ($method == 'put') {
+            if ($response->getStatusCode() == 204) {
+                return true;
+            } else {
+                throw new Exception('Unable to perform action to '.$location);
+            }
+        }
         $data = $response->json();
         if (isset($data['error']) && $data['error'] != '') {
             throw new Exception($data['error']);
