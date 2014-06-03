@@ -36,9 +36,8 @@ class Temperature
      */
     public function getCurrentTemperature()
     {
-        $oStatus = new Status($this->api);
-        $status = $oStatus->getStatus();
-        return $status['currentTemperature'];
+        $response = $this->api->sendRequest('get', '/users/' . $this->api->getUsername() . '/widgets/heating');
+        return $response['currentTemperature'];
     }
 
     /**
@@ -48,9 +47,59 @@ class Temperature
      */
     public function getCurrentTargetTemperature()
     {
-        $oStatus = new Status($this->api);
-        $status = $oStatus->getStatus();
-        return $status['targetTemperature'];
+        $response = $this->api->sendRequest('get', '/users/' . $this->api->getUsername() . '/widgets/heating');
+        return $response['targetTemperature'];
     }
 
+
+    /**
+     * Gets the current heating mode
+     *
+     * @return mixed - Return Types: AUTO, OFF, MANUAL
+     */
+    public function getHeatingMode()
+    {
+        $response = $this->api->sendRequest('get', '/users/' . $this->api->getUsername() . '/widgets/heating');
+        return $response['mode'];
+    }
+
+
+    /**
+     * Sets the current heating mode to be used by Hive (AUTO, MANUAL OR OFF)
+     *
+     * @param $mode - Mode To set temperature setting
+     *
+     * @return boolean
+     * @throws Exception - If invalid mode is passed
+     */
+    public function setHeatingMode($mode)
+    {
+        if (!in_array($mode, ['AUTO', 'OFF', 'MANUAL'])) {
+            throw new Exception($mode.' is an invalid heating mode');
+        }
+        return $this->api->sendRequest(
+            'put', '/users/' . $this->api->getUsername() . '/widgets/heating/mode',
+            ['mode' => $mode]
+        );
+    }
+
+    /**
+     * Gets current heating schedule
+     *
+     * @return array
+     */
+    public function getSchedule() {
+        return $this->api->sendRequest('get', '/users/'.$this->api->getUsername().'/widgets/heating/detail');
+    }
+
+
+    /**
+     * Sets the current heating schedule
+     *
+     * @throws Exception
+     */
+    public function setSchedule($schedule) {
+        /* @todo: implement this method */
+        throw new Exception('Method setSchedule is not yet implemented');
+    }
 }
