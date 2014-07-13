@@ -4,6 +4,7 @@ namespace Hive\Api;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
+use Hive\Control\Exception;
 
 Class Api
 {
@@ -19,6 +20,8 @@ Class Api
      * @param               $username - Your Hive API Username
      * @param               $password - Your Hive API Password
      * @param        string $url      - URL of API EndPoint
+     *                                ~
+     * @throws \Exception on non-existent username/password
      */
     public function __construct($username, $password, $url = 'https://api.bgchlivehome.co.uk/v5')
     {
@@ -29,6 +32,9 @@ Class Api
 
     public function sendRequest($method = 'get', $location, $params = array())
     {
+        if (!$this->username || !$this->password) {
+            throw new Exception('Username/Password not set!');
+        }
         if (!$this->logged_in && $location != '/login') {
             $this->performLogin();
         }
@@ -39,14 +45,17 @@ Class Api
                 'caller'   => $this->caller
             ], $params
         );
-
-        $oClient = new Client();
-        $response = $oClient->$method(
-            $this->url . $location, [
-                'body'    => $params,
-                'cookies' => $this->getCookieJar()
-            ]
-        );
+        try {
+            $oClient = new Client();
+            $response = $oClient->$method(
+                $this->url . $location, [
+                    'body'    => $params,
+                    'cookies' => $this->getCookieJar()
+                ]
+            );
+        } Catch (\Exception $e) {
+            throw new Exception($e);
+        }
         if ($method == 'put') {
             if ($response->getStatusCode() == 204) {
                 return true;
@@ -133,7 +142,7 @@ Class Api
         if ($this->hubs === null) {
             $this->performLogin();
         }
-        return isset($this->hubs[0])?$this->hubs[0]:null;
+        return isset($this->hubs[0]) ? $this->hubs[0] : null;
     }
 
     /**
@@ -141,11 +150,17 @@ Class Api
      *
      * @return bool
      */
-    protected function performLogin() {
-        $response = $this->sendRequest('post', '/login');
-        $this->logged_in = true;
-        $this->hubs = $response['hubIds'];
-        return true;
+    public function performLogin()
+    {
+        try {
+            $response = $this->sendRequest('post', '/login');
+            $this->logged_in = true;
+            $this->hubs = $response['hubIds'];
+            return true;
+        } catch (Exception $e) {
+
+        }
+
     }
 
 }
